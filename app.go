@@ -45,7 +45,7 @@ func DoDNSSet(w http.ResponseWriter, r *http.Request) {
 	dnsAddRecord := exec.Command("cmd", "/C", "dnscmd /recordadd "+zoneName+" "+nodeName+" "+dnsType+" "+Address)
 
 	if err := dnsAddRecord.Run(); err != nil {
-		respondWithJSON(w, http.StatusBadRequest, map[string]string{"message": err.Error()})
+		respondWithJSON(w, http.StatusBadRequest, map[string]string{"message": "Add record failed, error was: " + err.Error()})
 		return
 	}
 
@@ -87,14 +87,14 @@ func EditDNSSet(w http.ResponseWriter, r *http.Request) {
 	dnsCmdDeleteRecord := exec.Command("cmd", "/C", "dnscmd /recorddelete "+zoneName+" "+nodeName+" "+dnsType+" /f")
 
 	if err := dnsCmdDeleteRecord.Run(); err != nil {
-		respondWithJSON(w, http.StatusBadRequest, map[string]string{"message": err.Error()})
+		respondWithJSON(w, http.StatusBadRequest, map[string]string{"message": "Edit record failed, error was: " + err.Error()})
 		return
 	}
 
 	dnsAddDeleteRecord := exec.Command("cmd", "/C", "dnscmd /recordadd "+zoneName+" "+nodeName+" "+dnsType+" "+Address)
 
 	if err := dnsAddDeleteRecord.Run(); err != nil {
-		respondWithJSON(w, http.StatusBadRequest, map[string]string{"message": err.Error()})
+		respondWithJSON(w, http.StatusBadRequest, map[string]string{"message": "Edit record failed, error was: " + err.Error()})
 		return
 	}
 	retMsg := fmt.Sprintf("The alias " + dnsType + " record '" + nodeName + "." + zoneName + "' was successfully updated to '" + Address + "'.")
@@ -128,7 +128,7 @@ func DoDNSRemove(w http.ResponseWriter, r *http.Request) {
 		respondWithJSON(w, http.StatusBadRequest, map[string]string{"message": err.Error()})
 		return
 	}
-	retMsg := fmt.Sprintf("The" + dnsType + " record " + nodeName + "." + zoneName + "' was successfully removed.")
+	retMsg := fmt.Sprintf("The " + dnsType + " record " + nodeName + "." + zoneName + "' was successfully removed.")
 	respondWithJSON(w, http.StatusOK, map[string]string{"message": retMsg})
 }
 
@@ -158,7 +158,6 @@ func main() {
 	r.Methods("POST").Path("/dns/{zoneName}/{dnsType}/{nodeName}/set/{Address}").HandlerFunc(DoDNSSet)
 	r.Methods("PUT").Path("/dns/{zoneName}/{dnsType}/{nodeName}/set/{Address}").HandlerFunc(EditDNSSet)
 
-	//r.Methods("GET").Path("/dns/{zoneName}/{dnsType}/{nodeName}/remove").HandlerFunc(DoDNSRemove)
 	r.Methods("POST").Path("/dns/{zoneName}/{dnsType}/{nodeName}/remove").HandlerFunc(DoDNSRemove)
 	fmt.Printf("Listening on port %d.\n", serverPort)
 
