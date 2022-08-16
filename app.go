@@ -156,7 +156,7 @@ func main() {
 	})
 
 	r.Methods("POST").Path("/dns/{zoneName}/{dnsType}/{nodeName}/set/{Address}").HandlerFunc(DoDNSSet)
-	r.Methods("POST").Path("/dns/{zoneName}/{dnsType}/{nodeName}/set/{Address}").HandlerFunc(EditDNSSet)
+	r.Methods("POST").Path("/dns/{zoneName}/{dnsType}/{nodeName}/edit/{Address}").HandlerFunc(EditDNSSet)
 	r.Methods("POST").Path("/dns/{zoneName}/{dnsType}/{nodeName}/remove").HandlerFunc(DoDNSRemove)
 	fmt.Printf("Listening on port %d.\n", serverPort)
 
